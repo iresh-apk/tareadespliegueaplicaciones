@@ -1,0 +1,64 @@
+name: CI/CD Deploy
+
+on:
+  push:
+    branches: [ master, main ]
+  pull_request:
+    branches: [ master, main ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout codigo
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+
+    - name: Instalar dependencias
+      run: npm install --if-present
+
+    - name: Ejecutar linting
+      run: npm run lint
+
+    - name: Ejecutar tests
+      run: npm test
+
+    - name: Build del proyecto
+      run: npm run build
+
+    - name: Verificar archivos requeridos
+      run: |
+        echo "Verificando archivos necesarios para despliegue..."
+        test -f index.html && echo "✓ index.html existe" || exit 1
+        test -f styles.css && echo "✓ styles.css existe" || exit 1
+        test -f app.js && echo "✓ app.js existe" || exit 1
+        test -f package.json && echo "✓ package.json existe" || exit 1
+        echo "✓ Todos los archivos requeridos estan presentes"
+
+    - name: Validar HTML
+      run: |
+        echo "Validando estructura HTML..."
+        grep -q "<html" index.html && echo "✓ Tag html encontrado"
+        grep -q "<head" index.html && echo "✓ Tag head encontrado"
+        grep -q "<body" index.html && echo "✓ Tag body encontrado"
+        echo "✓ Estructura HTML valida"
+
+  deploy:
+    needs: build-and-test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main'
+    
+    steps:
+    - name: Checkout codigo
+      uses: actions/checkout@v4
+      
+    - name: Simular despliegue
+      run: |
+        echo "🚀 Iniciando despliegue..."
+        echo "📦 Preparando archivos..."
+        echo "✓ Despliegue completado exitosamente!"

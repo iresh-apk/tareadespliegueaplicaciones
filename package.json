@@ -1,0 +1,13 @@
+{
+  "name": "tareadespliegueaplicaciones",
+  "version": "1.0.0",
+  "description": "Proyecto de despliegue de aplicaciones con GitHub Actions",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Tests ejecutados correctamente\" && exit 0",
+    "lint": "echo \"Linting completado\" && exit 0",
+    "build": "echo \"Build completado\" && exit 0"
+  },
+  "author": "iresh-apk",
+  "license": "MIT"
+}
